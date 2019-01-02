@@ -1,0 +1,5 @@
+---
+kerberos_server_package: krb5-server
+kerberos_realm: EXAMPLE.COM
+kerberos_localstatedir: /var/kerberos
+kerberos_admin: example/admin
