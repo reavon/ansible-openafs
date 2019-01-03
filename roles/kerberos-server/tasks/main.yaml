@@ -1,4 +1,18 @@
 ---
+# TODO: selinuxize
+- name: disable selinux
+  selinux:
+    state: disabled
+  when: ansible_distribution == "CentOS"
+
+# TODO: firewall rules
+- name: disable firewall
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+  when: ansible_distribution == "CentOS"
+
 - name: install kerberos server
   package:
     name: "{{ kerberos_server_package }}"
@@ -18,21 +32,17 @@
     state: enabled
   when: ansible_distribution == "CentOS"
 
+# NOTE: /etc/krb5.conf is a prereq.
 - name: configure kerberos kdc
   template:
-    src: kdc.conf.j2
-    dest: "{{ kerberos_localstatedir }}/krb5kdc/kdc.conf"
+    src: "{{ item }}.j2"
+    dest: "{{ kerberos_localstatedir }}/krb5kdc/{{ item }}"
     owner: root
     group: root
     mode: 0600
-
-- name: configure kerberos admin acls
-  template:
-    src: kadm5.acl.j2
-    dest: "{{ kerberos_localstatedir }}/krb5kdc/kadm5.acl"
-    owner: root
-    group: root
-    mode: 0600
+  with_items:
+  - kdc.conf
+  - kadm5.acl
 
 - name: create kerberos kdc database
   command: >

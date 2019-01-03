@@ -13,13 +13,17 @@
     - name: tycobb
       keytab: tycobb.keytab
   roles:
+  - kerberos-client
   - kerberos-server
 
-#- name: openafs cell databases
-#  hosts: openafs-databases
-#  become: yes
-#  roles:
-#  - openafs-database
+- name: openafs cell databases
+  hosts: openafs-databases
+  become: yes
+  vars:
+    openafs_cell: example.com
+  roles:
+  - kerberos-client
+  - openafs-server
 
 #- name: openafs cell fileservers
 #  hosts: openafs-fileservers

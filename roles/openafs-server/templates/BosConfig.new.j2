@@ -1,0 +1,8 @@
+restrictmode 0
+restarttime 16 0 0 0 0
+checkbintime 3 0 5 0 0
+{% for bnode in openafs_bnodes %}
+bnode simple {{ bnode.name }} 1
+parm {{ bnode.cmd }}
+end
+{% endfor %}

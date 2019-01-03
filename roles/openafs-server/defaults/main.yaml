@@ -1,0 +1,23 @@
+---
+openafs_admin: admin.admin
+openafs_cell: example.com
+openafs_org: Example
+openafs_realm: EXAMPLE.COM
+openafs_server_package: openafs-server
+openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm
+
+# Transarc compatiblity paths
+openafs_path:
+  afsconfdir: /usr/afs/etc
+  viceetcdir: /usr/vice/etc
+  afssrvdir: /usr/afs/bin
+  afslocaldir: /usr/afs/local
+  afsdbdir: /usr/afs/db
+  afslogdir: /usr/afs/logs
+
+openafs_bnodes:
+  - name: vlserver
+    cmd:  "{{ openafs_path.afssrvdir }}/vlserver"
+  - name: ptserver
+    cmd:  "{{ openafs_path.afssrvdir }}/ptserver"
+

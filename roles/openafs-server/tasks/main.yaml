@@ -1,0 +1,97 @@
+---
+# TODO: selinuxize
+- name: disable selinux
+  selinux:
+    state: disabled
+  when: ansible_distribution == "CentOS"
+
+- name: add epel yum repo
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+
+- name: add openafs yum repo
+  yum:
+    name: "{{ openafs_yum_repo }}"
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+
+- name: install openafs server
+  yum:
+    state: present
+    name:
+    - openafs-server
+
+- name: install asetkey and klist
+  yum:
+    state: present
+    name:
+    - openafs-krb5
+    - krb5-workstation
+
+- name: configure cell
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openafs_path.afsconfdir }}/{{ item }}"
+    mode: 0644
+  with_items:
+  - CellServDB
+  - ThisCell
+  - UserList
+
+- name: distribute keytab
+  copy:
+    # HACK Alert: how to determine the src path?
+    src: keytabs/afs01/var/kerberos/keytabs/afs.keytab
+    dest: "{{ openafs_path.afsconfdir }}/afs.keytab"
+
+- command: >
+    klist -e -k {{ openafs_path.afsconfdir }}/afs.keytab
+  register: klist_result
+
+- set_fact:
+    kvno:  "{{ klist_result.stdout_lines[3].split()[0] }}"
+    princ: "{{ klist_result.stdout_lines[3].split()[1] }}"
+    enc:   "{{ klist_result.stdout_lines[3].split()[2].replace('(','').replace(')','') }}"
+    eno:   "{{ kerberos_eno[klist_result.stdout_lines[3].split()[2].replace('(','').replace(')','')] }}"
+
+- name: set service key
+  command: >
+    asetkey
+    add
+    rxkad_krb5
+    {{ kvno }}
+    {{ eno }}
+    {{ openafs_path.afsconfdir }}/afs.keytab
+    {{ princ }}
+
+- name:
+  file:
+    state: directory
+    path: "{{ openafs_path.afslocaldir }}"
+    mode: 0644
+    owner: root
+    group: root
+
+- name: configure server
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openafs_path.afslocaldir }}/{{ item }}"
+    mode: 0644
+    owner: root
+    group: root
+  with_items:
+  - BosConfig.new
+  - NetInfo
+
+- name: start openafs servers
+  service:
+    state: started
+    name: openafs-server
+
+- name: pause while starting bosserver
+  pause:
+    seconds: 10
