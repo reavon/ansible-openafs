@@ -44,33 +44,6 @@
     creates: "{{ kerberos_localstatedir }}/krb5kdc/principal"
   register: krb5_util_results
 
-- name: create directory for keytabs
-  file:
-    path: "{{ kerberos_localstatedir }}/keytabs"
-    state: directory
-    owner: root
-    group: root
-    mode: 0600
-
-- name: create a kerberos admin principal
-  command: >
-    /sbin/kadmin.local
-    -r {{ kerberos_realm }}
-    -q 'add_principal -randkey {{ kerberos_admin}}@{{ kerberos_realm }}'
-  register: kadmin_results
-  changed_when: >
-    kadmin_results.rc == 0
-    and not "already exists while creating" in kadmin_results.stderr
-
-- name: create a kerberos admin principal keytab
-  command: >
-    /sbin/kadmin.local
-    -r {{ kerberos_realm }}
-    -q 'ktadd -keytab {{ kerberos_localstatedir }}/keytabs/admin.keytab {{ kerberos_admin }}@{{ kerberos_realm }}'
-  args:
-    creates: "{{ kerberos_localstatedir }}/keytabs/admin.keytab"
-  register: kadmin_results
-
 - name: start kerberos kdc
   service:
     name: krb5kdc
@@ -80,3 +53,7 @@
   service:
     name: kadmin
     state: started
+
+- name: create keytabs
+  include: keytabs.yaml
+  when: kerberos_principals is defined

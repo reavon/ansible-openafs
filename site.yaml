@@ -2,15 +2,25 @@
 - name: kerberos realm
   hosts: kerberos-servers[0]
   become: yes
+  vars:
+    kerberos_realm: EXAMPLE.COM
+    kerberos_principals:
+    - name: admin/admin
+      keytab: admin.keytab
+    - name: afs/example.com
+      keytab: afs.keytab
+      enctype: aes256-cts-hmac-sha1-96:normal
+    - name: tycobb
+      keytab: tycobb.keytab
   roles:
-  - role: kerberos-server
+  - kerberos-server
 
 #- name: openafs cell databases
 #  hosts: openafs-databases
 #  become: yes
 #  roles:
-#  - role: openafs-database
-#
+#  - openafs-database
+
 #- name: openafs cell fileservers
 #  hosts: openafs-fileservers
 #  become: yes
