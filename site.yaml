@@ -9,11 +9,9 @@
       keytab: admin.keytab
     - name: afs/example.com
       keytab: afs.keytab
-      enctype: aes256-cts-hmac-sha1-96:normal
     - name: tycobb
       keytab: tycobb.keytab
   roles:
-  - kerberos-client
   - kerberos-server
 
 - name: openafs cell databases
@@ -22,7 +20,6 @@
   vars:
     openafs_cell: example.com
   roles:
-  - kerberos-client
   - openafs-server
 
 #- name: openafs cell fileservers

@@ -1,36 +1,32 @@
 ---
-# TODO: selinuxize
 - name: disable selinux
+  # TODO: enable selinux
   selinux:
     state: disabled
-  when: ansible_distribution == "CentOS"
+
+- name: permit afs3 traffic
+  firewalld:
+    port: 7000-7009/udp
+    permanent: yes
+    state: enabled
 
 - name: add epel yum repo
   yum:
     name: epel-release
     state: present
     update_cache: yes
-  when: ansible_distribution == "CentOS"
 
 - name: add openafs yum repo
   yum:
     name: "{{ openafs_yum_repo }}"
     state: present
     update_cache: yes
-  when: ansible_distribution == "CentOS"
 
-- name: install openafs server
+- name: install openafs servers
   yum:
     state: present
     name:
     - openafs-server
-
-- name: install asetkey and klist
-  yum:
-    state: present
-    name:
-    - openafs-krb5
-    - krb5-workstation
 
 - name: configure cell
   template:
@@ -42,34 +38,10 @@
   - ThisCell
   - UserList
 
-- name: distribute keytab
-  copy:
-    # HACK Alert: how to determine the src path?
-    src: keytabs/afs01/var/kerberos/keytabs/afs.keytab
-    dest: "{{ openafs_path.afsconfdir }}/afs.keytab"
+- name: set service keys
+  include: setkey-rxkad-krb5.yaml
 
-- command: >
-    klist -e -k {{ openafs_path.afsconfdir }}/afs.keytab
-  register: klist_result
-
-- set_fact:
-    kvno:  "{{ klist_result.stdout_lines[3].split()[0] }}"
-    princ: "{{ klist_result.stdout_lines[3].split()[1] }}"
-    enc:   "{{ klist_result.stdout_lines[3].split()[2].replace('(','').replace(')','') }}"
-    eno:   "{{ kerberos_eno[klist_result.stdout_lines[3].split()[2].replace('(','').replace(')','')] }}"
-
-- name: set service key
-  command: >
-    asetkey
-    add
-    rxkad_krb5
-    {{ kvno }}
-    {{ eno }}
-    {{ openafs_path.afsconfdir }}/afs.keytab
-    {{ princ }}
-
-- name:
-  file:
+- file:
     state: directory
     path: "{{ openafs_path.afslocaldir }}"
     mode: 0644
@@ -92,6 +64,6 @@
     state: started
     name: openafs-server
 
-- name: pause while starting bosserver
+- name: pause while starting openafs servers
   pause:
     seconds: 10

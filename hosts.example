@@ -1,10 +1,10 @@
 [kerberos-servers]
-afs01
+afs01.example.com
 
 [openafs-databases]
-afs01
-afs02
-afs03
+afs01.example.com
+afs02.example.com
+afs03.example.com
 
 # [openafs-fileservers]
 # afs04

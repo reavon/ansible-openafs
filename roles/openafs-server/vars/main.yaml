@@ -20,7 +20,9 @@ kerberos_eno:
   aes128-cts-hmac-sha256-128: 19
   aes256-cts-hmac-sha384-192: 20
   rc4-hmac: 23
+  arcfour-hmac: 23
   rc4-hmac-exp: 24
+  arcfour-hmac-exp: 24
   camellia128-cts-cmac: 25
   camellia256-cts-cmac: 26
   subkey-keymaterial: 65

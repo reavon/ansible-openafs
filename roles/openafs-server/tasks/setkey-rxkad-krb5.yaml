@@ -1,0 +1,34 @@
+---
+- set_fact:
+    princ: "afs/{{ openafs_cell }}@{{ openafs_realm }}"
+    keytab: afs.keytab
+
+- name: install asetkey and klist
+  yum:
+    state: present
+    name:
+    - openafs-krb5
+    - krb5-workstation
+
+- name: distribute keytab
+  copy:
+    # HACK Alert: how to determine the src path?
+    src: keytabs/afs01.example.com/var/kerberos/keytabs/{{ keytab }}
+    dest: "{{ openafs_path.afsconfdir }}/{{ keytab }}"
+
+- name: get key numbers
+  shell: >
+    klist -e -k {{ openafs_path.afsconfdir }}/{{ keytab }} |
+    sed '1,3d' |
+    sed 's/[()]//g' |
+    awk '$2 == "{{ princ }}" && $3 !~ /^des/
+    { printf("- kvno: %d\n  enc: %s\n", $1, $3) }'
+  changed_when: False
+  register: klist_result
+
+- name: set service keys
+  command: >
+    asetkey add rxkad_krb5 {{ item.kvno }} {{ kerberos_eno[item.enc] }} {{ openafs_path.afsconfdir }}/{{ keytab }} {{ princ }}
+  args:
+    creates: "{{ openafs_path.afsconfdir }}/KeyFileExt"
+  with_items: "{{ klist_result.stdout | from_yaml }}"
