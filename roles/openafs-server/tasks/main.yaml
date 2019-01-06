@@ -12,6 +12,11 @@
     state: stopped
 #----------------------------------------
 
+- name: vice partitions
+  include: vice-partition.yaml
+  with_items: "{{ vicep.split(',') }}"
+  when: vicep is defined
+
 - name: add epel yum repo
   yum:
     name: epel-release

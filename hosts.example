@@ -7,11 +7,11 @@ afs02.example.com
 afs03.example.com
 
 [openafs-fileservers]
-afs01.example.com
-afs02.example.com
-afs03.example.com
+afs01.example.com     vicep=a,b,c
+afs02.example.com     vicep=a
+afs03.example.com     vicep=d
 afs04.example.com
-afs05.example.com
+afs05.example.com     vicep=x,y,z,aa
 
 # [openafs-clients]
 #afs06.example.com
