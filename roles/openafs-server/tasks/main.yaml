@@ -1,14 +1,16 @@
 ---
+
+#----------------------------------------
+# TODO: selinux labels and firewall rules
 - name: disable selinux
-  # TODO: enable selinux
   selinux:
     state: disabled
-
-- name: permit afs3 traffic
-  firewalld:
-    port: 7000-7009/udp
-    permanent: yes
-    state: enabled
+- name: disable firewall
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+#----------------------------------------
 
 - name: add epel yum repo
   yum:
@@ -26,7 +28,7 @@
   yum:
     state: present
     name:
-    - openafs-server
+      - openafs-server
 
 - name: configure cell
   template:
@@ -34,9 +36,9 @@
     dest: "{{ openafs_path.afsconfdir }}/{{ item }}"
     mode: 0644
   with_items:
-  - CellServDB
-  - ThisCell
-  - UserList
+    - CellServDB
+    - ThisCell
+    - UserList
 
 - name: set service keys
   include: setkey-rxkad-krb5.yaml
@@ -44,7 +46,7 @@
 - file:
     state: directory
     path: "{{ openafs_path.afslocaldir }}"
-    mode: 0644
+    mode: 0700
     owner: root
     group: root
 
@@ -56,8 +58,8 @@
     owner: root
     group: root
   with_items:
-  - BosConfig.new
-  - NetInfo
+    - BosConfig.new
+    - NetInfo
 
 - name: start openafs servers
   service:

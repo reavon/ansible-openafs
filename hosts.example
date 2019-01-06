@@ -6,9 +6,12 @@ afs01.example.com
 afs02.example.com
 afs03.example.com
 
-# [openafs-fileservers]
-# afs04
-# afs05
+[openafs-fileservers]
+afs01.example.com
+afs02.example.com
+afs03.example.com
+afs04.example.com
+afs05.example.com
 
 # [openafs-clients]
-# afs06
+#afs06.example.com

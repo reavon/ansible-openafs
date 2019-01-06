@@ -14,20 +14,16 @@
   roles:
   - kerberos-server
 
-- name: openafs cell databases
-  hosts: openafs-databases
+- name: openafs servers
+  hosts:
+    - openafs-databases
+    - openafs-fileservers
   become: yes
   vars:
     openafs_cell: example.com
   roles:
   - openafs-server
 
-#- name: openafs cell fileservers
-#  hosts: openafs-fileservers
-#  become: yes
-#  roles:
-#  - role: openafs-fileserver
-#
 ## create root.afs and root.cell volumes on fileserver[0] ?
 #
 #- name: openafs cell clients
