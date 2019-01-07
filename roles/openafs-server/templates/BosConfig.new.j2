@@ -1,14 +1,14 @@
 restrictmode 0
 restarttime 16 0 0 0 0
 checkbintime 3 0 5 0 0
-{% if 'openafs-databases' in group_names %}
+{% if 'openafs_databases' in group_names %}
 {% for bnode in openafs_bnodes %}
 bnode simple {{ bnode.name }} 1
 parm {{ bnode.cmd }}
 end
 {% endfor %}
 {% endif %}
-{% if 'openafs-fileservers' in group_names %}
+{% if 'openafs_fileservers' in group_names %}
 bnode dafs dafs 1
 parm /usr/afs/bin/dafileserver
 parm /usr/afs/bin/davolserver

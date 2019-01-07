@@ -66,11 +66,35 @@
     - BosConfig.new
     - NetInfo
 
+# TODO: BosConfig.new is wiped on bosserver start, triggering false 'changed' on
+#       subsequent runs.
+# TODO: Restart servers on bosconfig change.
+
 - name: start openafs servers
   service:
     state: started
     name: openafs-server
 
-- name: pause while starting openafs servers
-  pause:
-    seconds: 10
+- name: Ensure root volume exists for non-dynroot clients
+  run_once: true
+  command: >
+    vos create
+      -server {{ groups['openafs_fileservers'][0] }}
+      -partition {{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}
+      -name root.afs
+      -verbose
+      -localauth
+  register: vos_create_result
+  until: >
+    vos_create_result.rc == 0 or
+    'Volume root.afs already exists' in vos_create_result.stderr
+  delay: 30
+  retries: 10
+  ignore_errors: true
+  changed_when: vos_create_result.rc == 0
+
+- fail:
+    msg: Unable to create root.afs volume.
+  when: >
+    vos_create_result.rc != 0
+    and not 'Volume root.afs already exists' in vos_create_result.stderr

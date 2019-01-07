@@ -6,9 +6,10 @@
     group: root
     mode: 0700
 
-- file:
-    path: /vicep{{ item }}/AlwaysAttach
-    state: touch
+- copy:
+    content: ""
+    dest: /vicep{{ item }}/AlwaysAttach
+    force: no
     owner: root
     group: root
-    mode: 0700
+    mode: 0600

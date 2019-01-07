@@ -1,15 +1,13 @@
-[kerberos-servers]
+[kerberos_servers]
 afs01.example.com
 
-[openafs-databases]
+[openafs_databases]
 afs01.example.com
 afs02.example.com
 afs03.example.com
 
-[openafs-fileservers]
-afs01.example.com     vicep=a,b,c
-afs02.example.com     vicep=a
-afs03.example.com     vicep=d
+[openafs_fileservers]
+afs03.example.com     vicep=d,e,f
 afs04.example.com
 afs05.example.com     vicep=x,y,z,aa
 

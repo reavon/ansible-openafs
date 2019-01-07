@@ -1,6 +1,6 @@
 ---
 - name: kerberos realm
-  hosts: kerberos-servers[0]
+  hosts: kerberos_servers[0]
   become: yes
   vars:
     kerberos_realm: EXAMPLE.COM
@@ -16,8 +16,8 @@
 
 - name: openafs servers
   hosts:
-    - openafs-databases
-    - openafs-fileservers
+    - openafs_databases
+    - openafs_fileservers
   become: yes
   vars:
     openafs_cell: example.com
