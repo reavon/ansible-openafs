@@ -12,7 +12,7 @@
     - name: tycobb
       keytab: tycobb.keytab
   roles:
-  - kerberos-server
+  - kerberos_server
 
 - name: openafs servers
   hosts:
@@ -22,18 +22,15 @@
   vars:
     openafs_cell: example.com
   roles:
-  - openafs-server
+  - openafs_server
 
-## create root.afs and root.cell volumes on fileserver[0] ?
-#
-#- name: openafs cell clients
-#  hosts: openafs-clients
-#  become: yes
-#  roles:
-#  - role: kerberos-client
-#  - role: openafs-client
-#
+- name: openafs cell clients
+  hosts: openafs_clients
+  become: yes
+  roles:
+  - kerberos_client
+  - openafs_client
+
 ## mount root.cell volume
 ## set acls
 ## create and mount top-level volumes
-#
