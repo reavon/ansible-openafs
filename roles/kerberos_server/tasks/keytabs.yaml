@@ -11,25 +11,25 @@
   command: >
     /sbin/kadmin.local
     -r "{{ kerberos_realm }}"
-    -q "add_principal -randkey {{ item.name }}@{{ kerberos_realm }}"
+    -q "add_principal -randkey {{ item }}@{{ kerberos_realm }}"
   register: kadmin_results
   changed_when: >
     kadmin_results.rc == 0
     and not "already exists while creating" in kadmin_results.stderr
-  with_items: "{{ kerberos_principals }}"
+  with_items: "{{ kerberos_keytabs }}"
 
 - name: create a kerberos admin principal keytab
   command: >
     /sbin/kadmin.local
     -r "{{ kerberos_realm }}"
-    -q "ktadd -keytab {{ kerberos_localstatedir }}/keytabs/{{ item.keytab }} {{ item.name }}@{{ kerberos_realm }}"
+    -q "ktadd -keytab {{ kerberos_localstatedir }}/keytabs/{{ item.replace('/','.') }}.keytab {{ item }}@{{ kerberos_realm }}"
   args:
-    creates: "{{ kerberos_localstatedir }}/keytabs/{{ item.keytab }}"
+    creates: "{{ kerberos_localstatedir }}/keytabs/{{ item.replace('/','.') }}.keytab"
   register: kadmin_results
-  with_items: "{{ kerberos_principals }}"
+  with_items: "{{ kerberos_keytabs }}"
 
 - name: fetch keytab
   fetch:
-    src: "{{ kerberos_localstatedir }}/keytabs/{{ item.keytab }}"
+    src: "{{ kerberos_localstatedir }}/keytabs/{{ item.replace('/','.') }}.keytab"
     dest: keytabs
-  with_items: "{{ kerberos_principals }}"
+  with_items: "{{ kerberos_keytabs }}"

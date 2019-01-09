@@ -62,4 +62,4 @@
 
 - name: create keytabs
   include: keytabs.yaml
-  when: kerberos_principals is defined
+  when: kerberos_keytabs is defined

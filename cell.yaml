@@ -4,13 +4,10 @@
   become: yes
   vars:
     kerberos_realm: EXAMPLE.COM
-    kerberos_principals:
-    - name: admin/admin
-      keytab: admin.keytab
-    - name: afs/example.com
-      keytab: afs.keytab
-    - name: tycobb
-      keytab: tycobb.keytab
+    kerberos_keytabs:
+    - admin/admin
+    - afs/example.com
+    - tycobb
   roles:
   - kerberos_server
 

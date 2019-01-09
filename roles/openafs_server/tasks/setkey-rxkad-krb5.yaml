@@ -1,7 +1,7 @@
 ---
 - set_fact:
     princ: "afs/{{ openafs_cell }}@{{ openafs_realm }}"
-    keytab: afs.keytab
+    keytab: afs.{{ openafs_cell }}.keytab
 
 - name: install asetkey and klist
   yum:
