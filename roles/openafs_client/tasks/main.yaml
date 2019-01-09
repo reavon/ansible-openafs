@@ -1,0 +1,58 @@
+---
+
+#----------------------------------------
+# TODO: selinux labels and firewall rules
+- name: disable selinux
+  selinux:
+    state: disabled
+- name: disable firewall
+  systemd:
+    name: firewalld
+    enabled: no
+    state: stopped
+#----------------------------------------
+
+- name: add epel yum repo
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+
+- name: add openafs yum repo
+  yum:
+    name: "{{ openafs_yum_repo }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure cache directory exists
+  file:
+    state: directory
+    path: "{{ openafs_path.afscachedir }}"
+    mode: 0700
+    owner: root
+    group: root
+
+- name: install openafs client
+  yum:
+    state: present
+    name:
+      - dkms
+      - kernel-devel
+      - openafs
+      - openafs-client
+      - dkms-openafs
+
+- name: configure cell info
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ openafs_path.viceetcdir }}/{{ item }}"
+    mode: 0644
+  with_items:
+    - CellServDB.local
+    - ThisCell
+    - cacheinfo
+
+- name: start openafs client
+  service:
+    state: started
+    name: openafs-client

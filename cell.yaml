@@ -27,6 +27,7 @@
   roles:
   - kerberos_client
   - openafs_client
+  tags: client
 
 ## mount root.cell volume
 ## set acls

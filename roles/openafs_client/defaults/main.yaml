@@ -1,0 +1,18 @@
+---
+openafs_admin: admin.admin
+openafs_cell: example.com
+openafs_org: Example
+openafs_realm: EXAMPLE.COM
+openafs_server_package: openafs-server
+openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm
+
+openafs_path:
+  viceetcdir: /usr/vice/etc
+  afscachedir: /usr/vice/cache
+
+openafs_bnodes:
+  - name: vlserver
+    cmd:  "{{ openafs_path.afssrvdir }}/vlserver"
+  - name: ptserver
+    cmd:  "{{ openafs_path.afssrvdir }}/ptserver"
+
