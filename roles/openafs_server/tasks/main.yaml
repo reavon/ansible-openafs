@@ -106,7 +106,7 @@
   command: pts createuser -name {{ openafs_admin }} -localauth
   register: pts_result
   ignore_errors: true
-  changed_when: vos_result.rc == 0
+  changed_when: pts_result.rc == 0
 
 - name: Ensure admin user exists
   run_once: true
@@ -115,3 +115,17 @@
   when: >
     pts_result.rc != 0
     and not 'Entry for name already exists' in pts_result.stderr
+
+- name: Add admin user to system:administrators group
+  run_once: true
+  command: pts adduser {{ openafs_admin }} system:administrators -localauth
+  register: pts_result
+  ignore_errors: true
+  changed_when: pts_result.rc == 0
+
+- run_once: true
+  fail:
+    msg: Unable to create admin user
+  when: >
+    pts_result.rc != 0
+    and not 'Entry for id already exists' in pts_result.stderr
