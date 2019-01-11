@@ -28,9 +28,9 @@
   - kerberos_client
   - openafs_client
 
-- name: set up root volumes
-  hosts: openafs_clients[0]
-  tasks:
-  - script: root_volumes.sh
-  tags:
-  - root
+#- name: set up root volumes
+#  hosts: openafs_clients[0]
+#  tasks:
+#  - script: root_volumes.sh
+#  tags:
+#  - root
