@@ -27,8 +27,10 @@
   roles:
   - kerberos_client
   - openafs_client
-  tags: client
 
-## mount root.cell volume
-## set acls
-## create and mount top-level volumes
+- name: set up root volumes
+  hosts: openafs_clients[0]
+  tasks:
+  - script: root_volumes.sh
+  tags:
+  - root
