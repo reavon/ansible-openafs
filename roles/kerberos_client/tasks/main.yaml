@@ -5,6 +5,10 @@
     state: disabled
   when: ansible_distribution == "CentOS"
 
+- systemd:
+    name: firewalld
+    state: stopped
+
 - name: install kerberos workstation
   package:
     name: "{{ kerberos_client_package }}"
@@ -15,14 +19,16 @@
     port: 88/udp
     permanent: yes
     state: enabled
-  when: ansible_distribution == "CentOS"
+  when: False 
+  #when: ansible_distribution == "CentOS"
 
 - name: permit kerberos kadmin traffic
   firewalld:
     port: 749/udp
     permanent: yes
     state: enabled
-  when: ansible_distribution == "CentOS"
+  when: False 
+  #when: ansible_distribution == "CentOS"
 
 - name: configure kerberos
   template:

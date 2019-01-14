@@ -5,12 +5,17 @@
   selinux:
     state: disabled
 
+- systemd:
+    name: firewalld
+    state: stopped
+
 - name: Permit afs3 traffic
   firewalld:
     port: 7000-7009/udp
     state: enabled
     immediate: yes
     permanent: yes
+  when: False
 
 - name: Add epel yum repo
   yum:
@@ -37,10 +42,11 @@
 #  yum:
 #    state: present
 #    name:
-#      - dkms
-#      - kernel-devel
 #      - openafs
 #      - openafs-client
+#      - openafs-krb5
+#      - dkms
+#      - kernel-devel
 #      - dkms-openafs
 
 - name: Install OpenAFS client packages
@@ -49,6 +55,7 @@
     name:
       - openafs
       - openafs-client
+      - openafs-krb5
       - kmod-openafs
 
 - name: Update cell configuration

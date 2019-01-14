@@ -1,4 +1,8 @@
 ---
+
+# TODO:
+# 1. use failed_when
+# 2. stderr is not defined if vos cannot be run.
 - name: Ensure root volume exists
   command: >
     vos create

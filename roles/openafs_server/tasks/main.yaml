@@ -6,12 +6,17 @@
   selinux:
     state: disabled
 
+- systemd:
+    name: firewalld
+    state: stopped
+
 - name: Permit afs3 traffic
   firewalld:
     port: 7000-7009/udp
     immediate: yes
     permanent: yes
     state: enabled
+  when: False
 
 - name: Check vice partitions
   include: vice-partition.yaml

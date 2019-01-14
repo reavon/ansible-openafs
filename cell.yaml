@@ -1,36 +1,29 @@
 ---
-- name: kerberos realm
+- name: Create kerberos realm
   hosts: kerberos_servers[0]
   become: yes
   vars:
     kerberos_realm: EXAMPLE.COM
     kerberos_keytabs:
-    - admin/admin
-    - afs/example.com
-    - tycobb
+      - admin/admin
+      - afs/example.com
   roles:
   - kerberos_server
 
-- name: openafs servers
+- name: Install OpenAFS servers
   hosts:
     - openafs_databases
     - openafs_fileservers
   become: yes
-  vars:
-    openafs_cell: example.com
   roles:
-  - openafs_server
+    - openafs_server
 
-- name: openafs cell clients
+- name: Create cell root volumes.
+  import_playbook: root_volumes.yaml
+
+- name: Install OpenAFS clients
   hosts: openafs_clients
   become: yes
   roles:
-  - kerberos_client
-  - openafs_client
-
-#- name: set up root volumes
-#  hosts: openafs_clients[0]
-#  tasks:
-#  - script: root_volumes.sh
-#  tags:
-#  - root
+    - kerberos_client
+    - openafs_client
