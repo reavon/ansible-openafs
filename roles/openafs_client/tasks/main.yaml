@@ -9,6 +9,7 @@
     state: enabled
     immediate: yes
     permanent: yes
+  when: False
 
 - name: Add epel yum repo
   yum:

@@ -10,9 +10,12 @@ openafs_path:
   viceetcdir: /usr/vice/etc
   afscachedir: /usr/vice/cache
 
-openafs_bnodes:
-  - name: vlserver
-    cmd:  "{{ openafs_path.afssrvdir }}/vlserver"
-  - name: ptserver
-    cmd:  "{{ openafs_path.afssrvdir }}/ptserver"
+#server: "{{ groups['openafs_fileservers'][0] }}"
+#part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
+server: afs04.example.com
+part: a
 
+kinit: /usr/bin/kinit
+aklog: /usr/bin/aklog
+fs: /usr/bin/fs
+vos: /usr/sbin/vos
