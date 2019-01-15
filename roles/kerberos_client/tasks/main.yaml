@@ -1,34 +1,26 @@
 ---
-# TODO: selinuxize
 - name: disable selinux
   selinux:
     state: disabled
-  when: ansible_distribution == "CentOS"
 
-- systemd:
-    name: firewalld
-    state: stopped
+- name: permit kerberos kdc traffic
+  firewalld:
+    port: 88/udp
+    immediate: yes
+    permanent: yes
+    state: enabled
+
+- name: permit kerberos kadmin traffic
+  firewalld:
+    port: 749/udp
+    immediate: yes
+    permanent: yes
+    state: enabled
 
 - name: install kerberos workstation
   package:
     name: "{{ kerberos_client_package }}"
     state: present
-
-- name: permit kerberos kdc traffic
-  firewalld:
-    port: 88/udp
-    permanent: yes
-    state: enabled
-  when: False 
-  #when: ansible_distribution == "CentOS"
-
-- name: permit kerberos kadmin traffic
-  firewalld:
-    port: 749/udp
-    permanent: yes
-    state: enabled
-  when: False 
-  #when: ansible_distribution == "CentOS"
 
 - name: configure kerberos
   template:

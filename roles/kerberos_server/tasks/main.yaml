@@ -1,26 +1,21 @@
 ---
 - name: disable selinux
-  # TODO: enable selinux
   selinux:
     state: disabled
-
-- systemd:
-    name: firewalld
-    state: stopped
 
 - name: permit kerberos kdc traffic
   firewalld:
     port: 88/udp
+    immediate: yes
     permanent: yes
     state: enabled
-  when: False
 
 - name: permit kerberos kadmin traffic
   firewalld:
     port: 749/udp
+    immediate: yes
     permanent: yes
     state: enabled
-  when: False
 
 - name: set default realm
   template:

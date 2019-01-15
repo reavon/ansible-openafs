@@ -1,14 +1,7 @@
 ---
-
-# TODO: REMOVE THIS
-# Soften the system until I sort out the selinux labeling.
 - name: disable selinux
   selinux:
     state: disabled
-
-- systemd:
-    name: firewalld
-    state: stopped
 
 - name: Permit afs3 traffic
   firewalld:
@@ -16,7 +9,6 @@
     immediate: yes
     permanent: yes
     state: enabled
-  when: False
 
 - name: Check vice partitions
   include: vice-partition.yaml

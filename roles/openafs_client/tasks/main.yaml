@@ -1,13 +1,7 @@
 ---
-
-# TODO: REMOVE THIS
 - name: disable selinux
   selinux:
     state: disabled
-
-- systemd:
-    name: firewalld
-    state: stopped
 
 - name: Permit afs3 traffic
   firewalld:
@@ -15,7 +9,6 @@
     state: enabled
     immediate: yes
     permanent: yes
-  when: False
 
 - name: Add epel yum repo
   yum:
