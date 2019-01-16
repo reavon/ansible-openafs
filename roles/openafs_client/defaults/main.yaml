@@ -10,10 +10,11 @@ openafs_path:
   viceetcdir: /usr/vice/etc
   afscachedir: /usr/vice/cache
 
-#server: "{{ groups['openafs_fileservers'][0] }}"
-#part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
-server: afs04.example.com
-part: a
+kdc: "{{ groups['kerberos_servers'][0] }}"
+server: "{{ groups['openafs_fileservers'][0] }}"
+part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
+#server: afs04.example.com
+#part: a
 
 kinit: /usr/bin/kinit
 aklog: /usr/bin/aklog

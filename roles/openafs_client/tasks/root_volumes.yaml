@@ -5,8 +5,7 @@
 # Get admin token
 # TODO: become_method to get a token?
 - copy:
-    # TODO: how to get keytab src path? move this to the client role?
-    src: keytabs/afs01.example.com/var/kerberos/keytabs/admin.admin.keytab
+    src: "keytabs/{{ kdc }}/var/kerberos/keytabs/admin.admin.keytab"
     dest: admin.admin.keytab
 - command: "{{ kinit }} -k -t admin.admin.keytab admin/admin@{{ openafs_realm }}"
 - command: "{{ aklog }} -d -c {{ openafs_cell }}"

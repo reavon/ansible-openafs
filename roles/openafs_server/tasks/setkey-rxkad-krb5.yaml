@@ -12,8 +12,7 @@
 
 - name: distribute keytab
   copy:
-    # HACK Alert: how to determine the src path?
-    src: keytabs/afs01.example.com/var/kerberos/keytabs/{{ keytab }}
+    src: "keytabs/{{ kdc }}/var/kerberos/keytabs/{{ keytab }}"
     dest: "{{ openafs_path.afsconfdir }}/{{ keytab }}"
 
 - name: get key numbers

@@ -21,3 +21,4 @@ openafs_bnodes:
   - name: ptserver
     cmd:  "{{ openafs_path.afssrvdir }}/ptserver"
 
+kdc: "{{ groups['kerberos_servers'][0] }}"

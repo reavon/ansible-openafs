@@ -2,13 +2,11 @@
 afs01.example.com
 
 [openafs_databases]
-afs01.example.com
-afs02.example.com
-afs03.example.com
+afs[01:03].example.com
 
 [openafs_fileservers]
 afs04.example.com     vicep=a,b,c
 afs05.example.com     vicep=a,b,c
 
 [openafs_clients]
-afs06.example.com
+afs[01:06].example.com
