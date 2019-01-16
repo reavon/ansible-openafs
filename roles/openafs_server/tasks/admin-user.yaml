@@ -1,24 +1,28 @@
 ---
-- name: Ensure the admin user exists
+- name: Create admin user
   command: pts createuser -name {{ openafs_admin }} -localauth
   register: pts_result
+  until: >
+    'communication failure' not in vos_result.stderr and
+    'no quorum elected' not in vos_result.stderr
+  delay: 30
+  retries: 10
   ignore_errors: true
   changed_when: pts_result.rc == 0
-
-- fail:
-    msg: Unable to create admin user.
-  when: >
+  failed_when: >
     pts_result.rc != 0
-    and not 'Entry for name already exists' in pts_result.stderr
+    and 'Entry for name already exists' not in pts_result.stderr
 
 - name: Add admin user to system:administrators group
   command: pts adduser {{ openafs_admin }} system:administrators -localauth
   register: pts_result
+  until: >
+    'communication failure' not in vos_result.stderr and
+    'no quorum elected' not in vos_result.stderr
+  delay: 30
+  retries: 10
   ignore_errors: true
   changed_when: pts_result.rc == 0
-
-- fail:
-    msg: Unable to add admin user to admin group.
-  when: >
+  failed_when: >
     pts_result.rc != 0
-    and not 'Entry for id already exists' in pts_result.stderr
+    and 'Entry for id already exists' not in pts_result.stderr
