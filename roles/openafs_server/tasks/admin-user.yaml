@@ -7,7 +7,6 @@
     'no quorum elected' not in vos_result.stderr
   delay: 30
   retries: 10
-  ignore_errors: true
   changed_when: pts_result.rc == 0
   failed_when: >
     pts_result.rc != 0
@@ -21,7 +20,6 @@
     'no quorum elected' not in vos_result.stderr
   delay: 30
   retries: 10
-  ignore_errors: true
   changed_when: pts_result.rc == 0
   failed_when: >
     pts_result.rc != 0
