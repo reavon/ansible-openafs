@@ -3,10 +3,9 @@
   hosts: kerberos_servers[0]
   become: yes
   vars:
-    kerberos_realm: EXAMPLE.COM
     kerberos_keytabs:
       - admin/admin
-      - afs/example.com
+      - afs/{{ openafs_cell }}
   roles:
   - kerberos_server
 
