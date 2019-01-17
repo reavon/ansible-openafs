@@ -1,12 +1,14 @@
 ---
-- file:
+- name: Make /vicep{{ item }}
+  file:
     path: /vicep{{ item }}
     state: directory
     owner: root
     group: root
     mode: 0700
 
-- copy:
+- name: Enable always attach mode for /vicep{{ item }}
+  copy:
     content: ""
     dest: /vicep{{ item }}/AlwaysAttach
     force: no
