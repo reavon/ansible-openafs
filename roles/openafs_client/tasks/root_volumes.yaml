@@ -23,15 +23,15 @@
   command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.afs -verbose"
   register: vos_result
   until: >
-    'communication failure' not in vos_result.stderr and
-    'no quorum elected' not in vos_result.stderr
+    'communication failure' not in vos_result.get('stderr','') and
+    'no quorum elected' not in vos_result.get('stderr','')
   delay: 30
   retries: 10
   ignore_errors: true
-  changed_when: vos_result.get('rc',-1) == 0
+  changed_when: vos_result.rc == 0
   failed_when: >
     vos_result.rc != 0 and
-    'already exists' not in vos_result.stderr
+    'already exists' not in vos_result.get('stderr','')
 
 - name: Grant world readable rights to /afs
   command: >
@@ -46,15 +46,15 @@
   command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.cell -verbose"
   register: vos_result
   until: >
-    'communication failure' not in vos_result.stderr and
-    'no quorum elected' not in vos_result.stderr
+    'communication failure' not in vos_result.get('stderr','') and
+    'no quorum elected' not in vos_result.get('stderr','')
   delay: 30
   retries: 10
   ignore_errors: true
-  changed_when: vos_result.get('rc',-1) == 0
+  changed_when: vos_result.rc == 0
   failed_when: >
     vos_result.rc != 0 and
-    'already exists' not in vos_result.stderr
+    'already exists' not in vos_result.get('stderr','')
 
 - name: Mount root.cell volume
   command: >
@@ -115,6 +115,5 @@
 - name: Release root.afs
   command: "{{ vos }} release root.afs -verbose"
 
-- name: Flush volume info cache
+- name: Flush the volume cache
   command: "{{ fs }} checkvolumes"
-
