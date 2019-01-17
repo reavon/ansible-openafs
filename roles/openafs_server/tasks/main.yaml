@@ -38,11 +38,22 @@
     src: "{{ item }}.j2"
     dest: "{{ openafs_path.afsconfdir }}/{{ item }}"
     mode: 0644
+    owner: root
+    group: root
   with_items:
     - CellServDB
     - ThisCell
     - UserList
   # TODO: trigger on change
+
+- name: Set authentication realm name
+  copy:
+    content: "{{ openafs_realm }}"
+    dest: "{{ openafs_path.afsconfdir }}/krb.conf"
+    mode: 0644
+    owner: root
+    group: root
+  when: openafs_realm != openafs_cell
 
 - name: Add service keys
   include: setkey-rxkad-krb5.yaml
