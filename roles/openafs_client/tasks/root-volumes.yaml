@@ -2,6 +2,11 @@
 
 # TODO: Custom become_method to get a token?
 
+- set_fact:
+    kdc: "{{ groups['kerberos_servers'][0] }}"
+    server: "{{ groups['openafs_fileservers'][0] }}"
+    part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
+
 #
 # Get creds
 #

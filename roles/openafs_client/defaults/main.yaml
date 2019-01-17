@@ -3,18 +3,9 @@ openafs_admin: admin.admin
 openafs_cell: example.com
 openafs_org: Example
 openafs_realm: EXAMPLE.COM
-openafs_server_package: openafs-server
-openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm
-
-openafs_path:
-  viceetcdir: /usr/vice/etc
-  afscachedir: /usr/vice/cache
 
 kdc: "{{ groups['kerberos_servers'][0] }}"
 server: "{{ groups['openafs_fileservers'][0] }}"
 part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
 
-kinit: /usr/bin/kinit
-aklog: /usr/bin/aklog
-fs: /usr/bin/fs
-vos: /usr/sbin/vos
+openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm

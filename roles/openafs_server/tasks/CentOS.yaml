@@ -1,0 +1,43 @@
+---
+- name: Setting distro specific facts
+  set_fact:
+    afsconfdir: /usr/afs/etc
+    viceetcdir: /usr/vice/etc
+    afssrvdir: /usr/afs/bin
+    afslocaldir: /usr/afs/local
+    afsdbdir: /usr/afs/db
+    afslogdir: /usr/afs/logs
+
+- name: Disable selinux
+  selinux:
+    state: disabled
+
+- name: Permit afs3 traffic
+  firewalld:
+    port: 7000-7009/udp
+    immediate: yes
+    permanent: yes
+    state: enabled
+
+- name: Check vice partitions
+  include: vice-partition.yaml
+  with_items: "{{ vicep.split(',') }}"
+  when: vicep is defined
+
+- name: Add epel yum repo
+  yum:
+    name: epel-release
+    state: present
+    update_cache: yes
+
+- name: Add OpenAFS yum repo
+  yum:
+    name: "{{ openafs_yum_repo }}"
+    state: present
+    update_cache: yes
+
+- name: Install OpenAFS server packages
+  yum:
+    state: present
+    name:
+      - openafs-server

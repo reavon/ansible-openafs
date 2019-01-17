@@ -17,19 +17,14 @@
   roles:
     - openafs_server
 
-- name: Create cell root volumes.
-  hosts: openafs_clients[0]
-  roles:
-    - role: kerberos_client
-      become: yes
-    - role: openafs_client
-      become: yes
-  tasks:
-    - import_tasks: roles/openafs_client/tasks/root-volumes.yaml
-
 - name: Install OpenAFS clients
   hosts: openafs_clients
   become: yes
   roles:
     - kerberos_client
     - openafs_client
+
+- name: Create cell root volumes
+  hosts: openafs_clients[0]
+  tasks:
+    - import_tasks: roles/openafs_client/tasks/root-volumes.yaml

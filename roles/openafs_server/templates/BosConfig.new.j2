@@ -2,11 +2,12 @@ restrictmode 0
 restarttime 16 0 0 0 0
 checkbintime 3 0 5 0 0
 {% if 'openafs_databases' in group_names %}
-{% for bnode in openafs_bnodes %}
-bnode simple {{ bnode.name }} 1
-parm {{ bnode.cmd }}
+bnode simple ptserver 1
+parm {{ afssrvdir }}/ptserver
 end
-{% endfor %}
+bnode simple vlserver 1
+parm {{ afssrvdir }}/vlserver
+end
 {% endif %}
 {% if 'openafs_fileservers' in group_names %}
 bnode dafs dafs 1

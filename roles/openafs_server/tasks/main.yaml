@@ -1,42 +1,11 @@
 ---
-- name: Disable selinux
-  selinux:
-    state: disabled
-
-- name: Permit afs3 traffic
-  firewalld:
-    port: 7000-7009/udp
-    immediate: yes
-    permanent: yes
-    state: enabled
-
-- name: Check vice partitions
-  include: vice-partition.yaml
-  with_items: "{{ vicep.split(',') }}"
-  when: vicep is defined
-
-- name: Add epel yum repo
-  yum:
-    name: epel-release
-    state: present
-    update_cache: yes
-
-- name: Add OpenAFS yum repo
-  yum:
-    name: "{{ openafs_yum_repo }}"
-    state: present
-    update_cache: yes
-
-- name: Install OpenAFS server packages
-  yum:
-    state: present
-    name:
-      - openafs-server
+- include: CentOS.yaml
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Update cell configuration
   template:
     src: "{{ item }}.j2"
-    dest: "{{ openafs_path.afsconfdir }}/{{ item }}"
+    dest: "{{ afsconfdir }}/{{ item }}"
     mode: 0644
     owner: root
     group: root
@@ -49,7 +18,7 @@
 - name: Set authentication realm name
   copy:
     content: "{{ openafs_realm }}"
-    dest: "{{ openafs_path.afsconfdir }}/krb.conf"
+    dest: "{{ afsconfdir }}/krb.conf"
     mode: 0644
     owner: root
     group: root
@@ -62,7 +31,7 @@
 - name: Add local server directory
   file:
     state: directory
-    path: "{{ openafs_path.afslocaldir }}"
+    path: "{{ afslocaldir }}"
     mode: 0700
     owner: root
     group: root
@@ -70,7 +39,7 @@
 - name: Update local server configuration
   template:
     src: "{{ item }}.j2"
-    dest: "{{ openafs_path.afslocaldir }}/{{ item }}"
+    dest: "{{ afslocaldir }}/{{ item }}"
     mode: 0644
     owner: root
     group: root
@@ -81,9 +50,8 @@
   #       on subsequent runs.
 
 - name: Start the OpenAFS servers
-  systemd:
+  service:
     name: openafs-server
-    enabled: yes
     state: started
 
   # The root.afs volume must exist before non-dynroot clients can be started.

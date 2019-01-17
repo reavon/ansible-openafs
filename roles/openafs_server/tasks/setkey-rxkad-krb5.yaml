@@ -14,11 +14,11 @@
 - name: Distribute keytab {{ keytab }}
   copy:
     src: "keytabs/{{ kdc }}/var/kerberos/keytabs/{{ keytab }}"
-    dest: "{{ openafs_path.afsconfdir }}/{{ keytab }}"
+    dest: "{{ afsconfdir }}/{{ keytab }}"
 
 - name: Scan keytab for kvnos
   shell: >
-    klist -e -k {{ openafs_path.afsconfdir }}/{{ keytab }} |
+    klist -e -k {{ afsconfdir }}/{{ keytab }} |
     sed '1,3d' |
     sed 's/[()]//g' |
     awk '$2 == "{{ princ }}" && $3 !~ /^des/
@@ -28,7 +28,7 @@
 
 - name: Set service keys
   command: >
-    asetkey add rxkad_krb5 {{ item.kvno }} {{ kerberos_eno[item.enc] }} {{ openafs_path.afsconfdir }}/{{ keytab }} {{ princ }}
+    asetkey add rxkad_krb5 {{ item.kvno }} {{ kerberos_eno[item.enc] }} {{ afsconfdir }}/{{ keytab }} {{ princ }}
   args:
-    creates: "{{ openafs_path.afsconfdir }}/KeyFileExt"
+    creates: "{{ afsconfdir }}/KeyFileExt"
   with_items: "{{ klist_result.stdout | from_yaml }}"
