@@ -1,23 +1,23 @@
 ---
-- name: disable selinux
+- name: Disable selinux
   selinux:
     state: disabled
 
-- name: permit kerberos kdc traffic
+- name: Permit kerberos kdc traffic
   firewalld:
     port: 88/udp
     immediate: yes
     permanent: yes
     state: enabled
 
-- name: permit kerberos kadmin traffic
+- name: Permit kerberos kadmin traffic
   firewalld:
     port: 749/udp
     immediate: yes
     permanent: yes
     state: enabled
 
-- name: set default realm
+- name: Set default realm
   template:
     src: krb5.conf.j2
     dest: /etc/krb5.conf
@@ -25,12 +25,12 @@
     group: root
     mode: 0644
 
-- name: install kerberos server
+- name: Install kerberos server
   package:
     name: "{{ kerberos_server_package }}"
     state: present
 
-- name: configure kerberos kdc
+- name: Configure kerberos kdc
   template:
     src: "{{ item }}.j2"
     dest: "{{ kerberos_localstatedir }}/krb5kdc/{{ item }}"
@@ -41,7 +41,7 @@
   - kdc.conf
   - kadm5.acl
 
-- name: create kerberos kdc database
+- name: Create kerberos kdc database
   command: >
     /sbin/kdb5_util
     -P {{ lookup('password', '/dev/null chars=ascii_letters') }}
@@ -51,16 +51,16 @@
     creates: "{{ kerberos_localstatedir }}/krb5kdc/principal"
   register: krb5_util_results
 
-- name: start kerberos kdc
+- name: Start kerberos kdc
   service:
     name: krb5kdc
     state: started
 
-- name: start kadmin
+- name: Start kadmin
   service:
     name: kadmin
     state: started
 
-- name: create keytabs
+- name: Create keytabs
   include: keytabs.yaml
   when: kerberos_keytabs is defined

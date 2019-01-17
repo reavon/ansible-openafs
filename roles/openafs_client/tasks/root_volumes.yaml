@@ -1,70 +1,120 @@
 ---
-- debug:
-    msg: creating root volumes
 
-# Get admin token
-# TODO: become_method to get a token?
-- copy:
+# TODO: Custom become_method to get a token?
+
+#
+# Get creds
+#
+- name: Copy admin user keytab
+  copy:
     src: "keytabs/{{ kdc }}/var/kerberos/keytabs/admin.admin.keytab"
     dest: admin.admin.keytab
-- command: "{{ kinit }} -k -t admin.admin.keytab admin/admin@{{ openafs_realm }}"
-- command: "{{ aklog }} -d -c {{ openafs_cell }}"
 
-# Create the afs root volume.
-- name: Create afs root volume
+- name: Get kerberos ticket
+  command: "{{ kinit }} -k -t admin.admin.keytab admin/admin@{{ openafs_realm }}"
+
+- name: Get afs token
+  command: "{{ aklog }} -d -c {{ openafs_cell }}"
+
+#
+# Setup root.afs volume
+#
+- name: Create root.afs volume
   command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.afs -verbose"
   register: vos_result
-  changed_when: vos_result.rc == 0
+  until: >
+    'communication failure' not in vos_result.stderr and
+    'no quorum elected' not in vos_result.stderr
+  delay: 30
+  retries: 10
+  ignore_errors: true
+  changed_when: vos_result.get('rc',-1) == 0
   failed_when: >
-    vos_result.rc != 0
-    and 'Volume root.afs already exists' not in vos_result.get('stderr','')
+    vos_result.rc != 0 and
+    'already exists' not in vos_result.stderr
 
-- command: "{{ fs }} setacl /afs/.:mount/{{ openafs_cell }}:root.afs/. system:anyuser read"
+- name: Grant world readable rights to /afs
+  command: >
+    {{ fs }} setacl
+    -dir /afs/.:mount/{{ openafs_cell }}:root.afs/.
+    -acl system:anyuser read
 
-# Create the cell root volume.
-- name: Create cell root volume
+#
+# Setup root.cell volume
+#
+- name: Create root.cell volume
   command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.cell -verbose"
   register: vos_result
-  changed_when: vos_result.rc == 0
+  until: >
+    'communication failure' not in vos_result.stderr and
+    'no quorum elected' not in vos_result.stderr
+  delay: 30
+  retries: 10
+  ignore_errors: true
+  changed_when: vos_result.get('rc',-1) == 0
   failed_when: >
-    vos_result.rc != 0
-    and 'Volume root.cell already exists' not in vos_result.get('stderr','')
+    vos_result.rc != 0 and
+    'already exists' not in vos_result.stderr
 
-- command: "{{ fs }} setacl /afs/.:mount/{{ openafs_cell }}:root.cell/. system:anyuser read"
-
-- command: "{{ fs }} mkmount /afs/.:mount/{{ openafs_cell }}:root.afs/{{ openafs_cell }} root.cell {{ openafs_cell }}"
+- name: Mount root.cell volume
+  command: >
+    {{ fs }} mkmount
+    -dir /afs/.:mount/{{ openafs_cell }}:root.afs/{{ openafs_cell }}
+    -vol root.cell
+    -cell {{ openafs_cell }}
   register: fs_result
   changed_when: fs_result.rc == 0
   failed_when: >
     fs_result.rc != 0
     and 'File exists' not in fs_result.get('stderr','')
 
-# Replicate the cell root volume.
-- command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.cell"
+- name: Grant world readable rights to /afs/{{ openafs_cell }}
+  command: >
+    {{ fs }} setacl
+    -dir /afs/.:mount/{{ openafs_cell }}:root.cell/.
+    -acl system:anyuser read
+
+#
+# Replicate the root.cell volume
+#
+- name: Add a read-only site for root.cell
+  command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.cell"
   register: vos_result
   changed_when: vos_result.rc == 0
   failed_when: >
     vos_result.rc != 0
     and 'RO already exists on partition' not in vos_result.get('stderr','')
 
-- command: "{{ vos }} release root.cell -verbose"
+- name: Release root.cell
+  command: "{{ vos }} release root.cell -verbose"
 
-- command: "{{ fs }} mkmount /afs/.:mount/{{ openafs_cell }}:root.afs/.{{ openafs_cell }} root.cell {{ openafs_cell }} -rw"
+- name: Create root.cell read-write mount point
+  command: >
+    {{ fs }} mkmount
+    -dir /afs/.:mount/{{ openafs_cell }}:root.afs/.{{ openafs_cell }}
+    -vol root.cell
+    -cell {{ openafs_cell }}
+    -rw
   register: fs_result
   changed_when: fs_result.rc == 0
   failed_when: >
     fs_result.rc != 0
     and 'File exists' not in fs_result.get('stderr','')
 
-- command: "{{ fs }} checkvolumes"
-
-# Replicate the afs root volume.
-- command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.afs"
+#
+# Replicate the root.afs volume.
+#
+- name: Add a read-only site for root.afs
+  command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.afs"
   register: vos_result
   changed_when: vos_result.rc == 0
   failed_when: >
     vos_result.rc != 0
     and 'RO already exists on partition' not in vos_result.get('stderr','')
 
-- command: "{{ vos }} release root.afs -verbose"
+- name: Release root.afs
+  command: "{{ vos }} release root.afs -verbose"
+
+- name: Flush volume info cache
+  command: "{{ fs }} checkvolumes"
 

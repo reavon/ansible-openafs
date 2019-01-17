@@ -1,21 +1,22 @@
 ---
-- set_fact:
+- name: Set princ and keytab facts
+  set_fact:
     princ: "afs/{{ openafs_cell }}@{{ openafs_realm }}"
     keytab: afs.{{ openafs_cell }}.keytab
 
-- name: install asetkey and klist
+- name: Install asetkey and klist
   yum:
     state: present
     name:
     - openafs-krb5
     - krb5-workstation
 
-- name: distribute keytab
+- name: Distribute keytab {{ keytab }}
   copy:
     src: "keytabs/{{ kdc }}/var/kerberos/keytabs/{{ keytab }}"
     dest: "{{ openafs_path.afsconfdir }}/{{ keytab }}"
 
-- name: get key numbers
+- name: Scan keytab for kvnos
   shell: >
     klist -e -k {{ openafs_path.afsconfdir }}/{{ keytab }} |
     sed '1,3d' |
@@ -25,7 +26,7 @@
   changed_when: False
   register: klist_result
 
-- name: set service keys
+- name: Set service keys
   command: >
     asetkey add rxkad_krb5 {{ item.kvno }} {{ kerberos_eno[item.enc] }} {{ openafs_path.afsconfdir }}/{{ keytab }} {{ princ }}
   args:

@@ -1,28 +1,28 @@
 ---
-- name: disable selinux
+- name: Disable selinux
   selinux:
     state: disabled
 
-- name: permit kerberos kdc traffic
+- name: Permit kerberos kdc traffic
   firewalld:
     port: 88/udp
     immediate: yes
     permanent: yes
     state: enabled
 
-- name: permit kerberos kadmin traffic
+- name: Permit kerberos kadmin traffic
   firewalld:
     port: 749/udp
     immediate: yes
     permanent: yes
     state: enabled
 
-- name: install kerberos workstation
+- name: Install kerberos workstation
   package:
     name: "{{ kerberos_client_package }}"
     state: present
 
-- name: configure kerberos
+- name: Configure kerberos
   template:
     src: krb5.conf.j2
     dest: /etc/krb5.conf

@@ -13,8 +13,6 @@ openafs_path:
 kdc: "{{ groups['kerberos_servers'][0] }}"
 server: "{{ groups['openafs_fileservers'][0] }}"
 part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
-#server: afs04.example.com
-#part: a
 
 kinit: /usr/bin/kinit
 aklog: /usr/bin/aklog

@@ -1,5 +1,5 @@
 ---
-- name: disable selinux
+- name: Disable selinux
   selinux:
     state: disabled
 
