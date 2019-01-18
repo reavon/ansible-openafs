@@ -1,0 +1,9 @@
+---
+openafs_admin: admin.admin
+openafs_cell: example.com
+openafs_org: Example
+openafs_realm: EXAMPLE.COM
+
+kdc: "{{ groups['kerberos_servers'][0] }}"
+server: "{{ groups['openafs_fileservers'][0] }}"
+part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"

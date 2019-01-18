@@ -24,7 +24,7 @@
     - kerberos_client
     - openafs_client
 
-- name: Create cell root volumes
+- name: Create cell volumes
   hosts: openafs_clients[0]
-  tasks:
-    - import_tasks: roles/openafs_client/tasks/root-volumes.yaml
+  roles:
+    - openafs_cell

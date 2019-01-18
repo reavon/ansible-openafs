@@ -54,6 +54,9 @@
     name: openafs-server
     state: started
 
+- name: Give the servers a moment to start
+  command: sleep 20
+
   # The root.afs volume must exist before non-dynroot clients can be started.
 - include: root-afs-volume.yaml
   when: inventory_hostname == ansible_play_hosts[0]

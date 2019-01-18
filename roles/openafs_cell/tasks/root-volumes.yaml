@@ -2,11 +2,6 @@
 
 # TODO: Custom become_method to get a token?
 
-- set_fact:
-    kdc: "{{ groups['kerberos_servers'][0] }}"
-    server: "{{ groups['openafs_fileservers'][0] }}"
-    part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
-
 #
 # Get creds
 #
@@ -29,7 +24,8 @@
   register: vos_result
   until: >
     'communication failure' not in vos_result.get('stderr','') and
-    'no quorum elected' not in vos_result.get('stderr','')
+    'no quorum elected' not in vos_result.get('stderr','') and
+    'Input/output error' not in vos_result.get('stderr,'')
   delay: 30
   retries: 10
   changed_when: vos_result.rc == 0
@@ -51,7 +47,8 @@
   register: vos_result
   until: >
     'communication failure' not in vos_result.get('stderr','') and
-    'no quorum elected' not in vos_result.get('stderr','')
+    'no quorum elected' not in vos_result.get('stderr','') and
+    'Input/output error' not in vos_result.get('stderr,'')
   delay: 30
   retries: 10
   changed_when: vos_result.rc == 0
