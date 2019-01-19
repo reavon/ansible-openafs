@@ -1,10 +1,8 @@
 ---
-
-# TODO: Custom become_method to get a token?
-
 #
 # Get creds
 #
+# TODO: Custom become_method to get a token?
 - name: Copy admin user keytab
   copy:
     src: "keytabs/{{ kdc }}/var/kerberos/keytabs/admin.admin.keytab"
@@ -19,8 +17,8 @@
 #
 # Setup root.afs volume
 #
-- name: Create root.afs volume
-  command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.afs -verbose"
+- name: Create the root.afs volume
+  command: "{{ vos }} create -server {{ root_server }} -partition {{ root_part }} -name root.afs -verbose"
   register: vos_result
   until: >
     'communication failure' not in vos_result.get('stderr','') and
@@ -43,7 +41,7 @@
 # Setup root.cell volume
 #
 - name: Create root.cell volume
-  command: "{{ vos }} create -server {{ server }} -partition {{ part }} -name root.cell -verbose"
+  command: "{{ vos }} create -server {{ root_server }} -partition {{ root_part }} -name root.cell -verbose"
   register: vos_result
   until: >
     'communication failure' not in vos_result.get('stderr','') and
@@ -78,7 +76,7 @@
 # Replicate the root.cell volume
 #
 - name: Add a read-only site for root.cell
-  command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.cell"
+  command: "{{ vos }} addsite -server {{ root_server }} -part {{ root_part }} -id root.cell"
   register: vos_result
   changed_when: vos_result.rc == 0
   failed_when: >
@@ -105,7 +103,7 @@
 # Replicate the root.afs volume.
 #
 - name: Add a read-only site for root.afs
-  command: "{{ vos }} addsite -server {{ server }} -part {{ part }} -id root.afs"
+  command: "{{ vos }} addsite -server {{ root_server }} -part {{ root_part }} -id root.afs"
   register: vos_result
   changed_when: vos_result.rc == 0
   failed_when: >

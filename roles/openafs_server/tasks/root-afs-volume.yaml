@@ -2,8 +2,8 @@
 - name: Create root.afs volume
   command: >
     vos create
-      -server {{ groups['openafs_fileservers'][0] }}
-      -partition {{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}
+      -server {{ root_server }}
+      -partition {{ root_part }}
       -name root.afs
       -verbose
       -localauth
