@@ -3,17 +3,17 @@ restarttime 16 0 0 0 0
 checkbintime 3 0 5 0 0
 {% if 'openafs_databases' in group_names %}
 bnode simple ptserver 1
-parm {{ afssrvdir }}/ptserver
+parm {{ afssrvdir }}/ptserver{{ ' ' if opt_ptserver else '' }}{{ opt_ptserver }}
 end
 bnode simple vlserver 1
-parm {{ afssrvdir }}/vlserver
+parm {{ afssrvdir }}/vlserver{{ ' ' if opt_vlserver else '' }}{{ opt_vlserver }}
 end
 {% endif %}
 {% if 'openafs_fileservers' in group_names %}
 bnode dafs dafs 1
-parm /usr/afs/bin/dafileserver
-parm /usr/afs/bin/davolserver
-parm /usr/afs/bin/salvageserver
-parm /usr/afs/bin/dasalvager
+parm /usr/afs/bin/dafileserver{{ ' ' if opt_dafileserver else '' }}{{ opt_dafileserver }}
+parm /usr/afs/bin/davolserver{{ ' ' if opt_davolserver else '' }}{{ opt_davolserver }}
+parm /usr/afs/bin/salvageserver{{ ' ' if opt_salvageserver else '' }}{{ opt_salvageserver }}
+parm /usr/afs/bin/dasalvager{{ ' ' if opt_dasalvager else '' }}{{ opt_dasalvager }}
 end
 {% endif %}

@@ -12,6 +12,13 @@ afslocaldir: /usr/afs/local
 afsdbdir: /usr/afs/db
 afslogdir: /usr/afs/logs
 
+opt_ptserver:
+opt_vlserver:
+opt_dafileserver: -L
+opt_davolserver:
+opt_salvageserver:
+opt_dasalvager:
+
 kdc: "{{ groups['kerberos_servers'][0] }}"
 root_server: "{{ groups['openafs_fileservers'][0] }}"
 root_part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
