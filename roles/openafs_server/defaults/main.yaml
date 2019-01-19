@@ -5,6 +5,13 @@ openafs_org: Example
 openafs_realm: EXAMPLE.COM
 openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm
 
+afsconfdir: /usr/afs/etc
+viceetcdir: /usr/vice/etc
+afssrvdir: /usr/afs/bin
+afslocaldir: /usr/afs/local
+afsdbdir: /usr/afs/db
+afslogdir: /usr/afs/logs
+
 kdc: "{{ groups['kerberos_servers'][0] }}"
 root_server: "{{ groups['openafs_fileservers'][0] }}"
 root_part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"

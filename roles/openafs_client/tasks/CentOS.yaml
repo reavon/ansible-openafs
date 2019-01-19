@@ -1,9 +1,6 @@
 ---
 - name: Setting distro specific facts
   set_fact:
-    viceetcdir: /usr/vice/etc
-    afscachedir: /usr/vice/cache
-    kinit: /usr/bin/kinit
     aklog: /usr/bin/aklog
     fs: /usr/bin/fs
     vos: /usr/sbin/vos
