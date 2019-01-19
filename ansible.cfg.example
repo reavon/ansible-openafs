@@ -1,5 +1,5 @@
 [defaults]
-inventory = hosts.example
+inventory = hosts
 verbose = yes
 retry_files_enabled = no
 stdout_callback = yaml
