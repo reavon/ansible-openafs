@@ -12,6 +12,7 @@ afslocaldir: /usr/afs/local
 afsdbdir: /usr/afs/db
 afslogdir: /usr/afs/logs
 
+enable_dafs: true
 opt_ptserver:
 opt_vlserver:
 opt_dafileserver: -L
