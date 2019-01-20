@@ -5,4 +5,5 @@ openafs_org: Example
 openafs_realm: EXAMPLE.COM
 openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-release-latest.noarch.rpm
 
+with_dkms: False
 opt_afsd: -dynroot -fakestat -afsdb
