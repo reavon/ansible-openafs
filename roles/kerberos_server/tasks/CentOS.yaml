@@ -1,8 +1,4 @@
 ---
-- name: Setting distro specific facts
-  set_fact:
-    kerberos_localstatedir: /var/kerberos
-
 - name: Disable selinux
   selinux:
     state: disabled
@@ -21,6 +17,11 @@
     permanent: yes
     state: enabled
 
+- name: Install kerberos server
+  yum:
+    name: krb5-server
+    state: present
+
 - name: Set default realm
   template:
     src: krb5.conf.j2
@@ -28,8 +29,3 @@
     owner: root
     group: root
     mode: 0644
-
-- name: Install kerberos server
-  yum:
-    name: krb5-server
-    state: present

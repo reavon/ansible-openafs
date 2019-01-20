@@ -1,10 +1,4 @@
 ---
-- name: Setting distro specific facts
-  set_fact:
-    aklog: /usr/bin/aklog
-    fs: /usr/bin/fs
-    vos: /usr/sbin/vos
-
 - name: Disable selinux
   selinux:
     state: disabled
