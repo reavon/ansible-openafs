@@ -8,6 +8,8 @@ openafs_yum_repo: https://download.sinenomine.net/openafs/repo/sna-openafs-relea
 viceetcdir: /usr/vice/etc
 afscachedir: /usr/vice/cache
 
+opt_afsd: -dynroot -fakestat -afsdb
+
 kinit: /usr/bin/kinit
 aklog: /usr/afsws/bin/aklog
 fs: /usr/afs/bin/fs
