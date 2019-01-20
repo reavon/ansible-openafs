@@ -20,7 +20,6 @@
     - CellServDB
     - ThisCell
     - UserList
-  # TODO: trigger on change
 
 - name: Set authentication realm name
   copy:
@@ -33,7 +32,6 @@
 
 - name: Add service keys
   include: setkey-rxkad-krb5.yaml
-  # TODO: old keyfile formats and rxkad.keytab
 
 - name: Add local server directory
   file:
@@ -53,8 +51,6 @@
   with_items:
     - BosConfig.new
     - NetInfo
-  # TODO: BosConfig.new is wiped on bosserver start, triggering a false change
-  #       on subsequent runs.
 
 - name: Start the OpenAFS servers
   service:
@@ -64,10 +60,11 @@
 - name: Give the servers a moment to start
   command: sleep 20
 
-  # The root.afs volume must exist before non-dynroot clients can be started.
+# The first admin user must be created with -localauth.
+- include: admin-user.yaml
+  when: inventory_hostname == ansible_play_hosts[0]
+
+# The root.afs volume must exist before non-dynroot clients can mount /afs.
 - include: root-afs-volume.yaml
   when: inventory_hostname == ansible_play_hosts[0]
 
-  # The first admin user must be created on a machine with a service key.
-- include: admin-user.yaml
-  when: inventory_hostname == ansible_play_hosts[0]
