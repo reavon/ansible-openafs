@@ -3,24 +3,24 @@
   command: pts createuser -name {{ openafs_admin }} -localauth
   register: pts_result
   until: >
-    'communication failure' not in vos_result.stderr and
-    'no quorum elected' not in vos_result.stderr
+    pts_result.rc == 0
+    or 'Entry for name already exists' in pts_result.get('stderr','')
   delay: 30
   retries: 10
   changed_when: pts_result.rc == 0
   failed_when: >
     pts_result.rc != 0
-    and 'Entry for name already exists' not in pts_result.stderr
+    and 'Entry for name already exists' not in pts_result.get('stderr','')
 
 - name: Add admin user to system:administrators group
   command: pts adduser {{ openafs_admin }} system:administrators -localauth
   register: pts_result
   until: >
-    'communication failure' not in vos_result.stderr and
-    'no quorum elected' not in vos_result.stderr
+    pts_result.rc == 0
+    or 'Entry for id already exists' in pts_result.get('stderr','')
   delay: 30
   retries: 10
   changed_when: pts_result.rc == 0
   failed_when: >
     pts_result.rc != 0
-    and 'Entry for id already exists' not in pts_result.stderr
+    and 'Entry for id already exists' not in pts_result.get('stderr','')

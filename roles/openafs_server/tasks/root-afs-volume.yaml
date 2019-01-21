@@ -9,9 +9,8 @@
       -localauth
   register: vos_result
   until: >
-    'communication failure' not in vos_result.get('stderr','') and
-    'no quorum elected' not in vos_result.get('stderr','') and
-    'Input/output error' not in vos_result.get('stderr','')
+    vos_result.rc == 0 or
+    'already exists' in vos_result.get('stderr','')
   delay: 30
   retries: 10
   changed_when: vos_result.rc == 0
