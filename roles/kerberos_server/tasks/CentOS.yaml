@@ -3,6 +3,12 @@
   selinux:
     state: disabled
 
+- name: Start firewall
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+
 - name: Permit kerberos kdc traffic
   firewalld:
     port: 88/udp
