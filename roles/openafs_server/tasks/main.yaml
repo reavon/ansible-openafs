@@ -57,8 +57,8 @@
     name: openafs-server
     state: started
 
-- name: Give the servers a moment to start
-  command: sleep 20
+#- name: Give the servers a moment to start
+#  command: sleep 20
 
 # The first admin user must be created with -localauth.
 - include: admin-user.yaml

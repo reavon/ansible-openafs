@@ -6,4 +6,6 @@
     - "{{ ansible_os_family }}.yaml"
     - defaults.yaml
 
-- include: root-volumes.yaml
+- include: admin-login.yaml
+
+- include: volumes-{{ ('-dynroot' in opt_afsd) | ternary('dynroot','nodynroot') }}.yaml
