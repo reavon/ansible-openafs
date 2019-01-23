@@ -6,6 +6,6 @@ openafs_realm: EXAMPLE.COM
 
 kdc: "{{ groups['kerberos_servers'][0] }}"
 root_server: "{{ groups['openafs_fileservers'][0] }}"
-root_part: "{{ hostvars[groups['openafs_fileservers'][0]]['vicep'][0] }}"
+root_part: a
 
 opt_afsd: -dynroot -fakestat -afsdb
