@@ -23,12 +23,12 @@
 
 - name: Set authentication realm name
   copy:
-    content: "{{ openafs_realm }}"
+    content: "{{ realm }}"
     dest: "{{ afsconfdir }}/krb.conf"
     mode: 0644
     owner: root
     group: root
-  when: openafs_realm != openafs_cell
+  when: realm != cell
 
 - name: Add service keys
   include: setkey-rxkad-krb5.yaml

@@ -1,22 +1,26 @@
-[kerberos_servers]
+[kdc]
 afs01.example.com
 
-[openafs_databases]
+[databases]
 afs01.example.com
 afs02.example.com
 afs03.example.com
 
-[openafs_fileservers]
+[fileservers]
 afs04.example.com
 afs05.example.com
 
-[openafs_clients]
+[clients]
 afs[01:06].example.com
 
-[openafs_fileservers:vars]
-vicep="['a', 'b', 'c']"
-
 [all:vars]
-openafs_cell=example.com
-openafs_realm=EXAMPLE.COM
-kerberos_realm=EXAMPLE.COM
+cell=example.com
+realm=EXAMPLE.COM
+admin_name=admin
+admin_principal=admin
+admin_password=secret
+
+keytab_file=afs.keytab
+
+[fileservers:vars]
+vicep=['a', 'b', 'c']

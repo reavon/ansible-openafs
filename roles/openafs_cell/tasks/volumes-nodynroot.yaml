@@ -16,7 +16,7 @@
     - root.cell
 
 - name: Mount root.cell volume
-  command: "{{ fs }} mkmount -dir /afs/{{ openafs_cell }} -vol root.cell -cell {{ openafs_cell }}"
+  command: "{{ fs }} mkmount -dir /afs/{{ cell }} -vol root.cell -cell {{ cell }}"
   register: fs_result
   changed_when: fs_result.rc == 0
   failed_when: >
@@ -26,7 +26,7 @@
       or 'You can not change a backup or readonly volume' in fs_result.get('stderr','') )
 
 - name: Mount root.cell read-write volume
-  command: "{{ fs }} mkmount -dir /afs/.{{ openafs_cell }} -vol root.cell -cell {{ openafs_cell }} -rw"
+  command: "{{ fs }} mkmount -dir /afs/.{{ cell }} -vol root.cell -cell {{ cell }} -rw"
   register: fs_result
   changed_when: fs_result.rc == 0
   failed_when: >
@@ -43,7 +43,7 @@
     and 'You can not change a backup or readonly volume' not in fs_result.get('stderr','')
   with_items:
     - "/afs/."
-    - "/afs/{{ openafs_cell }}/."
+    - "/afs/{{ cell }}/."
 
 - name: Add root volume read-only sites
   command: "{{ vos }} addsite -server {{ root_server }} -part {{ root_part }} -id {{ item }}"

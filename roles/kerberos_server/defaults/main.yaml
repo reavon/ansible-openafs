@@ -1,3 +1,5 @@
 ---
-kerberos_realm: EXAMPLE.COM
-kerberos_admin: example/admin
+realm: EXAMPLE.COM
+admin_principal: admin
+admin_password: secret
+keytab_file: afs.keytab

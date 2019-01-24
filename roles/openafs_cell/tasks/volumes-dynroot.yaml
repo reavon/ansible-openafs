@@ -18,9 +18,9 @@
 - name: Mount root.cell volume
   command: >
     {{ fs }} mkmount
-    -dir /afs/.:mount/{{ openafs_cell }}:root.afs/{{ openafs_cell }}
+    -dir /afs/.:mount/{{ cell }}:root.afs/{{ cell }}
     -vol root.cell
-    -cell {{ openafs_cell }}
+    -cell {{ cell }}
   register: fs_result
   changed_when: fs_result.rc == 0
   failed_when: >
@@ -30,9 +30,9 @@
 - name: Mount root.cell read-write volume
   command: >
     {{ fs }} mkmount
-    -dir /afs/.:mount/{{ openafs_cell }}:root.afs/.{{ openafs_cell }}
+    -dir /afs/.:mount/{{ cell }}:root.afs/.{{ cell }}
     -vol root.cell
-    -cell {{ openafs_cell }}
+    -cell {{ cell }}
     -rw
   register: fs_result
   changed_when: fs_result.rc == 0
@@ -43,7 +43,7 @@
 - name: Grant world readable rights to root directories
   command: >
     {{ fs }} setacl
-    -dir /afs/.:mount/{{ openafs_cell }}:{{ item }}/.
+    -dir /afs/.:mount/{{ cell }}:{{ item }}/.
     -acl system:anyuser read
   with_items:
     - root.afs

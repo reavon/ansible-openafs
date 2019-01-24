@@ -1,6 +1,6 @@
 ---
 - name: Create admin user
-  command: pts createuser -name {{ openafs_admin }} -localauth
+  command: pts createuser -name {{ admin_name }} -localauth
   register: pts_result
   until: >
     pts_result.rc == 0
@@ -13,7 +13,7 @@
     and 'Entry for name already exists' not in pts_result.get('stderr','')
 
 - name: Add admin user to system:administrators group
-  command: pts adduser {{ openafs_admin }} system:administrators -localauth
+  command: pts adduser {{ admin_name }} system:administrators -localauth
   register: pts_result
   until: >
     pts_result.rc == 0

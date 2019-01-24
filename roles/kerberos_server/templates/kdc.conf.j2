@@ -5,7 +5,7 @@
  kdc_tcp_ports = 88
 
 [realms]
- {{ kerberos_realm }} = {
+ {{ realm }} = {
   #master_key_type = aes256-cts
   acl_file = {{ kerberos_localstatedir }}/krb5kdc/kadm5.acl
   dict_file = /usr/share/dict/words

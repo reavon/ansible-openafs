@@ -1,0 +1,46 @@
+---
+- name: Create a system independent path for keytabs
+  file:
+    path: /var/kerberos/keytabs
+    state: directory
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Check for the keytab file
+  stat:
+    path: /var/kerberos/keytabs/{{ keytab_file }}
+  register: keytab_status
+  changed_when: False
+  # Override the --check option so this task always runs.
+  check_mode: no
+
+- name: Create keytab principal
+  command: >
+    "{{ kadmin_local }}"
+    -r "{{ realm }}"
+    -q "add_principal -randkey afs/{{ cell }}@{{ realm }}"
+  register: kadmin_results
+  changed_when: >
+    kadmin_results.rc == 0
+    and not "already exists while creating" in kadmin_results.stderr
+  failed_when: >
+    kadmin_results.rc != 0
+  when: not keytab_status.stat.exists
+
+- name: Write keytab file
+  command: >
+    "{{ kadmin_local }}"
+    -r "{{ realm }}"
+    -q "ktadd -keytab /var/kerberos/keytabs/{{ keytab_file }} afs/{{ cell }}@{{ realm }}"
+  args:
+    creates: "/var/kerberos/keytabs/{{ keytab_file }}"
+  register: kadmin_results
+  when: not keytab_status.stat.exists
+
+- name: Fetch keytab file
+  fetch:
+    src: "/var/kerberos/keytabs/{{ keytab_file }}"
+    dest: "keytabs/{{ keytab_file }}"
+    flat: yes
+    fail_on_missing: yes

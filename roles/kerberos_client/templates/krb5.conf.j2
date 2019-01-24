@@ -1,14 +1,14 @@
 # {{ ansible_managed }}
 
 [libdefaults]
-    default_realm = {{ kerberos_realm }}
+    default_realm = {{ realm }}
 
 [realms]
-    {{ kerberos_realm }} = {
-{% for host in groups['kerberos_servers'] %}
+    {{ realm }} = {
+{% for host in groups['kdc'] %}
         kdc = {{ hostvars[host].inventory_hostname }}
 {% endfor %}
-        admin_server = {{ hostvars[groups['kerberos_servers'][0]].inventory_hostname }}
+        admin_server = {{ hostvars[groups['kdc'][0]].inventory_hostname }}
     }
 
 [domain_realm]

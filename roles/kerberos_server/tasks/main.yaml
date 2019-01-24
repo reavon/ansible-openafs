@@ -24,7 +24,7 @@
   command: >
     /sbin/kdb5_util
     -P {{ lookup('password', '/dev/null chars=ascii_letters') }}
-    -r {{ kerberos_realm }}
+    -r {{ realm }}
     create -s
   args:
     creates: "{{ kerberos_localstatedir }}/krb5kdc/principal"
@@ -40,6 +40,16 @@
     name: kadmin
     state: started
 
-- name: Create keytabs
-  include: keytabs.yaml
-  when: kerberos_keytabs is defined
+- name: Create admin principal
+  command: >
+    {{ kadmin_local }}
+    -r {{ realm }}
+    -q "add_principal -pw {{ admin_password }} {{ admin_principal }}@{{ realm }}"
+  register: kadmin_results
+  changed_when: >
+    kadmin_results.rc == 0
+    and not "already exists while creating" in kadmin_results.stderr
+
+- name: Create afs service keytab
+  include: keytab.yaml
+  when: cell is defined
