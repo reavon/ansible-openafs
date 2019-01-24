@@ -20,7 +20,5 @@ admin_name=admin
 admin_principal=admin
 admin_password=secret
 
-keytab_file=afs.keytab
-
 [fileservers:vars]
 vicep=['a', 'b', 'c']

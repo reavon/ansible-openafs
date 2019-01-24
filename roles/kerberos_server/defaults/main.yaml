@@ -1,5 +1,3 @@
 ---
 realm: EXAMPLE.COM
 admin_principal: admin
-admin_password: secret
-keytab_file: afs.keytab

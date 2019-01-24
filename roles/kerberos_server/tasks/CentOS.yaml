@@ -9,19 +9,17 @@
     enabled: yes
     state: started
 
-- name: Permit kerberos kdc traffic
+- name: Permit kerberos traffic
   firewalld:
-    port: 88/udp
+    port: "{{ item }}"
     immediate: yes
     permanent: yes
     state: enabled
-
-- name: Permit kerberos kadmin traffic
-  firewalld:
-    port: 749/udp
-    immediate: yes
-    permanent: yes
-    state: enabled
+  with_items:
+    - 88/udp
+    - 88/tcp
+    - 749/udp
+    - 749/tcp
 
 - name: Install kerberos server
   yum:

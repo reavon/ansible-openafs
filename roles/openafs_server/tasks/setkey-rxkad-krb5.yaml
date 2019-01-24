@@ -1,19 +1,23 @@
 ---
-- name: Install asetkey and klist
+- name: Install asetkey
   yum:
     state: present
     name:
-    - krb5-workstation
     - openafs-krb5
 
-- name: Distribute keytab {{ keytab }}
-  copy:
-    src: "keytabs/{{ keytab_file }}"
-    dest: "{{ afsconfdir }}/{{ keytab_file }}"
+- name: Write keytab file
+  command: >
+    kadmin
+    -r "{{ realm }}"
+    -p "{{ admin_principal }}"
+    -w "{{ admin_password }}"
+    -q 'ktadd -norandkey -k {{ afsconfdir }}/afs.keytab afs/{{ cell }}@{{ realm }}'
+  args:
+    creates: "{{ afsconfdir }}/afs.keytab"
 
 - name: Scan keytab for key numbers
   shell: >
-    klist -e -k {{ afsconfdir }}/{{ keytab_file }} |
+    klist -e -k {{ afsconfdir }}/afs.keytab |
     sed '1,3d' |
     sed 's/[()]//g' |
     awk '$2 == "afs/{{ cell }}@{{ realm }}" && $3 !~ /^des/
@@ -21,12 +25,12 @@
   changed_when: False
   register: klist_result
 
-- name: Set service keys
+- name: Set service key
   command: >
     asetkey add rxkad_krb5
     {{ item.kvno }}
     {{ kerberos_eno[item.enc] }}
-    {{ afsconfdir }}/{{ keytab_file }}
+    {{ afsconfdir }}/afs.keytab
     afs/{{ cell }}@{{ realm }}
   args:
     creates: "{{ afsconfdir }}/KeyFileExt"

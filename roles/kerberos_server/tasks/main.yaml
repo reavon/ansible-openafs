@@ -19,6 +19,9 @@
   with_items:
   - kdc.conf
   - kadm5.acl
+  notifiy:
+    - restart kdc
+    - restart kadmin
 
 - name: Create kerberos kdc database
   command: >
@@ -50,6 +53,13 @@
     kadmin_results.rc == 0
     and not "already exists while creating" in kadmin_results.stderr
 
-- name: Create afs service keytab
-  include: keytab.yaml
+- name: Create the afs service key
+  command: >
+    "{{ kadmin_local }}"
+    -r "{{ realm }}"
+    -q "add_principal -randkey afs/{{ cell }}@{{ realm }}"
+  register: kadmin_results
+  changed_when: >
+    kadmin_results.rc == 0
+    and not "already exists while creating" in kadmin_results.stderr
   when: cell is defined
